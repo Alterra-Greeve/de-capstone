@@ -1,21 +1,36 @@
 import os
-import firebase_admin
-from firebase_admin import credentials, storage
+from datetime import datetime
+from firebase_admin import credentials, initialize_app, storage
+from airflow.models import Variable
 
-class DataLoad:
-    def __init__(self, firebase_credentials_path, bucket_name):
-        # Initialize Firebase Admin SDK
-        cred = credentials.Certificate(firebase_credentials_path)
-        firebase_admin.initialize_app(cred, {
-            'storageBucket': bucket_name
-        })
-        self.bucket = storage.bucket()
+def DataLoad(folder_path):
+    try:
+        # Load Firebase credentials path and Firebase Storage bucket from Airflow Variables
+        CERTIFICATE_PATH = Variable.get("firebase_certificate_path")
+        STORAGE_BUCKET = Variable.get("firebase_storage_bucket")
 
-    def upload_files(self, folder_path):
-        # Iterate over all CSV files in the folder
-        for filename in os.listdir(folder_path):
-            if filename.endswith('.csv'):
-                file_path = os.path.join(folder_path, filename)
-                blob = self.bucket.blob(filename)
+        # Initialize Firebase app if not already initialized
+        cred = credentials.Certificate(CERTIFICATE_PATH)
+        initialize_app(cred, {"storageBucket": STORAGE_BUCKET}, name="firebase_storage")
+
+        # Get a reference to the Firebase Storage service
+        bucket = storage.bucket(app=storage.app(name="firebase_storage"))
+
+        current_date = datetime.now().strftime("%Y-%m-%d")
+
+        # Get all CSV files in the specified folder
+        csv_files = [file for file in os.listdir(folder_path) if file.endswith('.csv')]
+
+        for csv_file in csv_files:
+            file_path = os.path.join(folder_path, csv_file)
+
+            # Ensure it's a file and not a directory
+            if os.path.isfile(file_path):
+                # Upload file to Firebase Storage
+                blob = bucket.blob(f"{current_date}/{csv_file}")
                 blob.upload_from_filename(file_path)
-                print(f"File {file_path} uploaded to {self.bucket.name}/{filename}.")
+
+                print(f"Data from {csv_file} loaded successfully")
+
+    except Exception as e:
+        print(f"An error occurred when loading data to Firebase Storage: {e}")
