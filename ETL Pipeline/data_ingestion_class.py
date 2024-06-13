@@ -25,12 +25,17 @@ class DataIngestion:
         self.table_df_dict = dict.fromkeys(self.table_list, None)
 
         for table in self.table_list:
-            cursor.execute(f'SELECT * FROM {table}')
+            cursor.execute(f"SELECT * FROM {table}")
             results = cursor.fetchall()
             column_names = [desc[0] for desc in cursor.description]
             self.table_df_dict[table] = pd.DataFrame(results, columns=column_names)
         self.connection.close()
 
     def save_data(self, dirname):
+        if not os.path.exists(dirname):
+            os.makedirs(dirname)
+
         for table in self.table_list:
             self.table_df_dict[table].to_csv(f"{dirname}{table}.csv", index=False)
+
+        return dirname
