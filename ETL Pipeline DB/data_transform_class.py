@@ -32,3 +32,5 @@ class DataTransformation:
                 transformed_file_path = os.path.join(self.transformed_data_dir, file)
                 df.to_csv(transformed_file_path, index=False)
                 print(f"Transformed data for table {table_name} saved to {transformed_file_path}")
+
+        return self.transformed_data_dir
