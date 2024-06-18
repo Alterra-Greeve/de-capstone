@@ -63,4 +63,4 @@ class DataIngestion:
                 writer.writerow([timestamp_local.strftime('%Y-%m-%d %H:%M:%S'), extracted_content])
 
         print(f"Logs saved to {output_file_csv}")
-        return output_file_csv
+        return dirname
