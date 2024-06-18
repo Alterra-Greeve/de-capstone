@@ -97,9 +97,9 @@
   - name: description
     type: STRING
     mode: NULLABLE
-  - name: date_upload
-    type: DATETIME
-    mode: NULLABLE
+  # - name: date_upload
+  #   type: DATETIME
+  #   mode: NULLABLE
   - name: status
     type: STRING
     mode: NULLABLE
@@ -531,6 +531,9 @@
     type: INT64
     mode: NULLABLE
   - name: avatar_url
+    type: STRING
+    mode: NULLABLE
+  - name: membership
     type: STRING
     mode: NULLABLE
 - name: verify_otp
