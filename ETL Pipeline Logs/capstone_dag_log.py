@@ -5,7 +5,7 @@ import pendulum
 from airflow.decorators import dag, task
 from data_ingestion_class_log import DataIngestion
 import pytz
-# from data_transform_class_log import DataTransformation
+from data_transform_class_logs import DataTransformation
 # from data_load_class_log import DataLoad
 
 local_tz = pytz.timezone("Asia/Jakarta")
@@ -32,11 +32,11 @@ def data_ingestion(execution_date, **kwargs):
     ingest_obj = DataIngestion()
     return ingest_obj.get_data(start_date, end_date, dirname, log_msg_start, log_msg_end)
 
-# def data_transform(ti):
-#     directory = ti.xcom_pull(task_ids='data_ingestion')
-#     print(f"Hi dag dt! {directory}")
-#     transform_obj = DataTransformation(directory)
-#     return transform_obj.transform_data()
+def data_transform(ti, **kwargs):
+    directory = ti.xcom_pull(task_ids='data_ingestion')
+    print(f"Hi dag dt! {directory}")
+    transform_obj = DataTransformation(directory)
+    return transform_obj.transform_data()
 
 # def data_load(ti):
 #     directory = ti.xcom_pull(task_ids='data_transform')
@@ -56,10 +56,11 @@ with DAG(
         provide_context=True
     )
 
-    # data_transform_task = PythonOperator(
-    #     task_id="data_transform",
-    #     python_callable=data_transform
-    # )
+    data_transform_task = PythonOperator(
+        task_id="data_transform",
+        python_callable=data_transform
+        provide_context=True
+    )
 
     # data_load_task = PythonOperator(
     #     task_id="data_load",
@@ -67,4 +68,4 @@ with DAG(
     # )
 
     # data_ingestion_task  >> data_transform_task >> data_load_task
-    data_ingestion_task
+    data_ingestion_task >> data_transform_task
