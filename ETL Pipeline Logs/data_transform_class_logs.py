@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+
 class DataTransformation:
     
     def __init__(self, data_dir):
@@ -13,7 +14,8 @@ class DataTransformation:
         text = text.replace('[LOG_DE_END]', '')
         return text
     
-    def process_data(self):
+    def process_and_save_data(self):
+        # Read the original CSV data
         df = pd.read_csv(self.data_dir)
         
         # Clean textPayload column
@@ -30,14 +32,21 @@ class DataTransformation:
         # Drop textPayload column
         df.drop(columns=['textPayload'], inplace=True)
         
-        return df
-
-    def separate_dataframes(self, processed_df):
-        open_category_df = processed_df[processed_df['doing'] == 'OPEN-CATEGORY'].drop(columns=['doing'])
-        open_product_df = processed_df[processed_df['doing'] == 'OPEN-PRODUCT'].drop(columns=['doing'])
-        search_product_df = processed_df[processed_df['doing'] == 'SEARCH-PRODUCT'].drop(columns=['doing'])
+        # Save processed data to CSV
+        processed_data_file = os.path.join(self.transformed_data_dir, "processed_data.csv")
+        df.to_csv(processed_data_file, index=False)
         
-        open_product_df = open_product_df.rename(columns={'category': 'product_id'})
-        search_product_df = search_product_df.rename(columns={'category': 'keyword'})
+        # Separate data into different DataFrames and save each to CSV
+        open_category_df = df[df['doing'] == 'OPEN-CATEGORY'].drop(columns=['doing'])
+        open_product_df = df[df['doing'] == 'OPEN-PRODUCT'].drop(columns=['doing']).rename(columns={'category': 'product_id'})
+        search_product_df = df[df['doing'] == 'SEARCH-PRODUCT'].drop(columns=['doing']).rename(columns={'category': 'keyword'})
         
-        return open_category_df, open_product_df, search_product_df
+        open_category_file = os.path.join(self.transformed_data_dir, "open_category.csv")
+        open_product_file = os.path.join(self.transformed_data_dir, "open_product.csv")
+        search_product_file = os.path.join(self.transformed_data_dir, "search_product.csv")
+        
+        open_category_df.to_csv(open_category_file, index=False)
+        open_product_df.to_csv(open_product_file, index=False)
+        search_product_df.to_csv(search_product_file, index=False)
+        
+        return processed_data_file, open_category_file, open_product_file, search_product_file
