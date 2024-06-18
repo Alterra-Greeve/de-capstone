@@ -97,9 +97,9 @@
   - name: description
     type: STRING
     mode: NULLABLE
-  # - name: date_upload
-  #   type: DATETIME
-  #   mode: NULLABLE
+  - name: date_upload
+    type: DATETIME
+    mode: NULLABLE
   - name: status
     type: STRING
     mode: NULLABLE
