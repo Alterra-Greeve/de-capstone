@@ -1,7 +1,7 @@
 - name: admins
   format: CSV
   schema:
-  - name: id
+  - name: admins_id
     type: STRING
     mode: NULLABLE
   - name: created_at
@@ -29,7 +29,7 @@
   format: CSV
   partitioning_field: created_at
   schema:
-  - name: id
+  - name: carts_id
     type: STRING
     mode: NULLABLE
   - name: created_at
@@ -54,7 +54,7 @@
   format: CSV
   partitioning_field: created_at
   schema:
-  - name: id
+  - name: challenge_confirmation_image_id
     type: STRING
     mode: NULLABLE
   - name: created_at
@@ -76,7 +76,7 @@
   format: CSV
   partitioning_field: created_at
   schema:
-  - name: id
+  - name: challenge_confirmations_id
     type: STRING
     mode: NULLABLE
   - name: created_at
@@ -107,7 +107,7 @@
   format: CSV
   partitioning_field: created_at
   schema:
-  - name: id
+  - name: challenge_impact_categories_id
     type: STRING
     mode: NULLABLE
   - name: created_at
@@ -129,7 +129,7 @@
   format: CSV
   partitioning_field: created_at
   schema:
-  - name: id
+  - name: challenge_logs_id
     type: STRING
     mode: NULLABLE
   - name: created_at
@@ -154,7 +154,7 @@
   format: CSV
   partitioning_field: created_at
   schema:
-  - name: id
+  - name: challenges_id
     type: STRING
     mode: NULLABLE
   - name: created_at
@@ -194,7 +194,7 @@
   format: CSV
   partitioning_field: created_at
   schema:
-  - name: id
+  - name: forums_id
     type: STRING
     mode: NULLABLE
   - name: created_at
@@ -221,7 +221,7 @@
 - name: impact_categories
   format: CSV
   schema:
-  - name: id
+  - name: impact_categories_id
     type: STRING
     mode: NULLABLE
   - name: created_at
@@ -252,7 +252,7 @@
   format: CSV
   partitioning_field: created_at
   schema:
-  - name: id
+  - name: message_forums_id
     type: STRING
     mode: NULLABLE
   - name: created_at
@@ -277,7 +277,7 @@
   format: CSV
   partitioning_field: created_at
   schema:
-  - name: id
+  - name: payment_notifications_id
     type: STRING
     mode: NULLABLE
   - name: created_at
@@ -326,7 +326,7 @@
   format: CSV
   partitioning_field: created_at
   schema:
-  - name: id
+  - name: product_images_id
     type: STRING
     mode: NULLABLE
   - name: created_at
@@ -351,7 +351,7 @@
   format: CSV
   partitioning_field: created_at
   schema:
-  - name: id
+  - name: product_impact_categories_id
     type: STRING
     mode: NULLABLE
   - name: created_at
@@ -373,7 +373,7 @@
   format: CSV
   partitioning_field: created_at
   schema:
-  - name: id
+  - name: product_logs_id
     type: STRING
     mode: NULLABLE
   - name: created_at
@@ -395,7 +395,7 @@
   format: CSV
   partitioning_field: created_at
   schema:
-  - name: id
+  - name: products_id
     type: STRING
     mode: NULLABLE
   - name: created_at
@@ -426,7 +426,7 @@
   format: CSV
   partitioning_field: created_at
   schema:
-  - name: id
+  - name: transaction_items_id
     type: STRING
     mode: NULLABLE
   - name: created_at
@@ -451,7 +451,7 @@
   format: CSV
   partitioning_field: created_at
   schema:
-  - name: id
+  - name: transactions_id
     type: STRING
     mode: NULLABLE
   - name: created_at
@@ -491,7 +491,7 @@
   format: CSV
   partitioning_field: created_at
   schema:
-  - name: id
+  - name: users_id
     type: STRING
     mode: NULLABLE
   - name: created_at
@@ -533,11 +533,14 @@
   - name: avatar_url
     type: STRING
     mode: NULLABLE
+  - name: membership
+    type: STRING
+    mode: NULLABLE
 - name: verify_otp
   format: CSV
   partitioning_field: created_at
   schema:
-  - name: id
+  - name: verify_otp_id
     type: STRING
     mode: NULLABLE
   - name: created_at
@@ -562,7 +565,7 @@
   format: CSV
   partitioning_field: created_at
   schema:
-  - name: id
+  - name: vouchers_id
     type: STRING
     mode: NULLABLE
   - name: created_at

@@ -7,7 +7,6 @@ from google.cloud import bigquery
 from google.cloud import storage
 
 import yaml
-
 import functions_framework
 
 with open("./schemas.yaml") as schema_file:
@@ -20,26 +19,26 @@ BQ = bigquery.Client()
 job_config = bigquery.LoadJobConfig()
 
 def streaming(data):
-    bucketname = data['bucket'] 
-    print("Bucket name",bucketname)
-    filename = data['name']   
-    print("File name",filename)  
+    bucketname = data['bucket']
+    print("Bucket name", bucketname)
+    filename = data['name']
+    print("File name", filename)
     timeCreated = data['timeCreated']
-    print("Time Created",timeCreated) 
+    print("Time Created", timeCreated)
 
     try:
         match = re.match(r'(\d{4}-\d{2}-\d{2})/([^/]+\.csv)$', filename)
         if not match:
             print("Filename does not match the expected pattern")
             return
-        
+
         folder_date, file_name = match.groups()
         print("Folder date:", folder_date)
         print("Extracted filename:", file_name)
 
         for table in config:
             tableName = table.get('name')
-  
+
             if re.search(tableName.replace('_', '-'), file_name) or re.search(tableName, file_name):
                 tableSchema = table.get('schema')
                 tableFormat = table.get('format')
@@ -76,13 +75,12 @@ def _check_if_table_exists(tableName, tableSchema):
         if partitioning_field:
             table.time_partitioning = bigquery.TimePartitioning(
                 field=partitioning_field,
-                type_=bigquery.TimePartitioningType.MONTH  # You can choose DAY, MONTH, YEAR
+                type_=bigquery.TimePartitioningType.MONTH
             )
             print(f"Partitioning field set to {partitioning_field}")
 
         table = BQ.create_table(table)
         print("Created table {}.{}.{}".format(table.project, table.dataset_id, table.table_id))
-
 
 def _load_table_from_uri(bucket_name, file_name, tableSchema, staging_table_name):
     uri = 'gs://%s/%s' % (bucket_name, file_name)
@@ -109,6 +107,8 @@ def _merge_into_final_table(staging_table_name, final_table_name, tableSchema):
     staging_table_id = f"{BQ_DATASET}.{staging_table_name}"
     final_table_id = f"{BQ_DATASET}.{final_table_name}"
 
+    primary_key = f"{final_table_name}_id"
+
     partitioning_field = None
     for table in config:
         if table['name'] == final_table_name:
@@ -120,10 +120,10 @@ def _merge_into_final_table(staging_table_name, final_table_name, tableSchema):
     merge_query = f"""
         MERGE `{final_table_id}` T
         USING `{staging_table_id}` S
-        ON T.id = S.id {partition_filter}
+        ON T.{primary_key} = S.{primary_key} {partition_filter}
         WHEN MATCHED THEN
             UPDATE SET
-                {', '.join([f"T.{col['name']} = S.{col['name']}" for col in tableSchema if col['name'] != 'id'])}
+                {', '.join([f"T.{col['name']} = S.{col['name']}" for col in tableSchema if col['name'] != primary_key])}
         WHEN NOT MATCHED THEN
             INSERT ({', '.join([col['name'] for col in tableSchema])})
             VALUES ({', '.join([f"S.{col['name']}" for col in tableSchema])});
@@ -133,7 +133,6 @@ def _merge_into_final_table(staging_table_name, final_table_name, tableSchema):
     query_job = BQ.query(merge_query)
     query_job.result()
     print("Merged data into final table:", final_table_name)
-
 
 def _delete_staging_table(staging_table_name):
     staging_table_id = BQ.dataset(BQ_DATASET).table(staging_table_name)
