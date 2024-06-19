@@ -1,6 +1,7 @@
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from datetime import datetime, timedelta
+import os
 import pendulum
 from airflow.decorators import dag, task
 from data_ingestion_class_log import DataIngestion
@@ -20,31 +21,44 @@ default_args = {
 def data_ingestion(logical_date, **kwargs):
     log_msg_start = "[LOG_DE_START]"
     log_msg_end = "[LOG_DE_END]"
-    dirname="dags/logs/"
+    dirname="dags/de_logs/"
 
     print(logical_date)
-    execution_date_gmt7 = pendulum.instance(logical_date).in_timezone(local_tz)
-    print(execution_date_gmt7)
+    logical_date_gmt7 = pendulum.instance(logical_date).in_timezone(local_tz)
+    print(logical_date_gmt7)
 
-    start_date = execution_date_gmt7.strftime("%Y-%m-%d")
-    end_date = (execution_date_gmt7 + timedelta(days=1)).strftime("%Y-%m-%d")
+    start_date = logical_date_gmt7.strftime("%Y-%m-%d")
+    end_date = (logical_date_gmt7 + timedelta(days=1)).strftime("%Y-%m-%d")
 
     ingest_obj = DataIngestion()
     return ingest_obj.get_data(start_date, end_date, dirname, log_msg_start, log_msg_end)
 
-# def data_transform(**kwargs):
+def data_transform(logical_date, **kwargs):
+    ti = kwargs['ti']
+    output_dir = ti.xcom_pull(task_ids='data_ingestion')
+    logical_date_gmt7 = pendulum.instance(logical_date).in_timezone(local_tz)
+    now_date = logical_date_gmt7.strftime("%Y-%m-%d")
+    
+    if not output_dir:
+        raise ValueError("XCom returned None or empty output_dir from data_ingestion_task.")
+
+    print(f"Received output_dir: {output_dir}")
+
+    transform_obj = DataTransformation(output_dir,now_date)
+    transformed_data_dir = transform_obj.transform_data()
+
+    return transformed_data_dir
+
+# def data_load(logical_date, **kwargs):
 #     ti = kwargs['ti']
-#     directory = ti.xcom_pull(task_ids='data_ingestion')
-#     if not directory:
-#         raise ValueError("XCom returned None or empty directory.")
-#     print(f"Directory from XCom: {directory}")
-
-#     transform_obj = DataTransformation(directory)
-#     return transform_obj.transform_data()
-
-# def data_load(ti):
 #     directory = ti.xcom_pull(task_ids='data_transform')
-#     load_obj = DataLoad(directory)
+    
+#     logical_date_gmt7 = pendulum.instance(logical_date).in_timezone(local_tz)
+#     now_date = logical_date_gmt7.strftime("%Y-%m-%d")
+    
+#     DataLoad(directory,now_date)
+
+# f"{outputfile_csv}logs{logicaldate}"
 
 with DAG(
     dag_id="Capstone-Log-Pipeline",
@@ -68,8 +82,9 @@ with DAG(
 
     # data_load_task = PythonOperator(
     #     task_id="data_load",
-    #     python_callable=data_load
+    #     python_callable=data_load,
+    #     provide_context=True
     # )
 
-    # data_ingestion_task  >> data_transform_task >> data_load_task
-    data_ingestion_task >> data_transform_task
+    data_ingestion_task >> data_transform_task 
+    
