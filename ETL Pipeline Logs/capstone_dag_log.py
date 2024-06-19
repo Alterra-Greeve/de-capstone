@@ -17,13 +17,13 @@ default_args = {
     'retry_delay': timedelta(minutes=5),
 }
 
-def data_ingestion(execution_date, **kwargs):
+def data_ingestion(logical_date, **kwargs):
     log_msg_start = "[LOG_DE_START]"
     log_msg_end = "[LOG_DE_END]"
     dirname="dags/logs/"
 
-    print(execution_date)
-    execution_date_gmt7 = pendulum.instance(execution_date).in_timezone(local_tz)
+    print(logical_date)
+    execution_date_gmt7 = pendulum.instance(logical_date).in_timezone(local_tz)
     print(execution_date_gmt7)
 
     start_date = execution_date_gmt7.strftime("%Y-%m-%d")
@@ -62,7 +62,7 @@ with DAG(
 
     data_transform_task = PythonOperator(
         task_id="data_transform",
-        python_callable=data_transform
+        python_callable=data_transform,
         provide_context=True
     )
 
