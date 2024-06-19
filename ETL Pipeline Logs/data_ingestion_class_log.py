@@ -38,7 +38,7 @@ class DataIngestion:
         if not os.path.exists(dirname):
             os.makedirs(dirname)
 
-        output_file_csv = f"{dirname}logs_{start_date}_to_{end_date}.csv"
+        output_file_csv = f"{dirname}logs_{start_date}.csv"
 
         with open(output_file_csv, 'w', newline='', encoding='utf-8') as csv_file:
             writer = csv.writer(csv_file)
