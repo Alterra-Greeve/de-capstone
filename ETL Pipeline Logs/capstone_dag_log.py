@@ -32,11 +32,15 @@ def data_ingestion(execution_date, **kwargs):
     ingest_obj = DataIngestion()
     return ingest_obj.get_data(start_date, end_date, dirname, log_msg_start, log_msg_end)
 
-def data_transform(ti, **kwargs):
-    directory = ti.xcom_pull(task_ids='data_ingestion')
-    print(f"Hi dag dt! {directory}")
-    transform_obj = DataTransformation(directory)
-    return transform_obj.transform_data()
+# def data_transform(**kwargs):
+#     ti = kwargs['ti']
+#     directory = ti.xcom_pull(task_ids='data_ingestion')
+#     if not directory:
+#         raise ValueError("XCom returned None or empty directory.")
+#     print(f"Directory from XCom: {directory}")
+
+#     transform_obj = DataTransformation(directory)
+#     return transform_obj.transform_data()
 
 # def data_load(ti):
 #     directory = ti.xcom_pull(task_ids='data_transform')
