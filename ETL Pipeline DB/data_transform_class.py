@@ -29,6 +29,11 @@ class DataTransformation:
                 # Ubah nama kolom 'id' menjadi '{table_name}_id'
                 df = df.rename(columns={'id': f"{table_name}_id"})
                 
+                # Ubah format tanggal ke '%Y-%m-%d %H:%M:%S'
+                for col in df.columns:
+                    if df[col].dtype == 'datetime64[ns]':
+                        df[col] = df[col].dt.strftime('%Y-%m-%d %H:%M:%S')
+                
                 transformed_file_path = os.path.join(self.transformed_data_dir, file)
                 df.to_csv(transformed_file_path, index=False)
                 print(f"Transformed data for table {table_name} saved to {transformed_file_path}")
