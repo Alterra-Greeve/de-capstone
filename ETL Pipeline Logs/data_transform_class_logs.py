@@ -3,8 +3,9 @@ import os
 
 class DataTransformation:
     def __init__(self, input_dir, execution_date):
+        self.execution_date=execution_date
         self.input_file_csv = f"{input_dir}logs_{execution_date}.csv"
-        self.transformed_data_dir = os.path.join(input_dir, "transformed")
+        self.transformed_data_dir = os.path.join(input_dir, f"transformed/{execution_date}")
         if not os.path.exists(self.transformed_data_dir):
             os.makedirs(self.transformed_data_dir)
 

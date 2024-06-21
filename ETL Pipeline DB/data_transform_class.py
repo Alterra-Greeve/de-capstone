@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+from datetime import datetime
 
 class DataTransformation:
     def __init__(self, data_dir):
@@ -28,6 +29,13 @@ class DataTransformation:
                 
                 # Ubah nama kolom 'id' menjadi '{table_name}_id'
                 df = df.rename(columns={'id': f"{table_name}_id"})
+                
+                # Ubah format tanggal ke '%Y-%m-%d %H:%M:%S'
+                datetime_col = ["date_start", "date_end", "date_upload", "created_at", "updated_at", "deleted_at"]
+                for col in datetime_col:
+                    if col in df.columns:
+                        df[col] = pd.to_datetime(df[col], format='ISO8601')
+                        df[col] = df[col].dt.floor('s')
                 
                 transformed_file_path = os.path.join(self.transformed_data_dir, file)
                 df.to_csv(transformed_file_path, index=False)
