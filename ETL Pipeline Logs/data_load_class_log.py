@@ -16,7 +16,7 @@ def DataLoad(folder_path, execution_date):
         # Get a reference to the Firebase Storage service
         bucket = storage.bucket()
 
-        current_date = execution_date.strftime("%Y-%m-%d")
+        current_date = execution_date
 
         # Get all CSV files in the specified folder
         csv_files = [file for file in os.listdir(folder_path) if file.endswith('.csv')]
@@ -30,7 +30,7 @@ def DataLoad(folder_path, execution_date):
                 blob = bucket.blob(f"{current_date}/{csv_file}")
                 blob.upload_from_filename(file_path)
 
-                print(f"Data from {csv_file} loaded successfully")
+                print(f"Data from {csv_file} loaded successfully to {current_date}/{csv_file}")
 
     except Exception as e:
         print(f"An error occurred when loading data to Firebase Storage: {e}")

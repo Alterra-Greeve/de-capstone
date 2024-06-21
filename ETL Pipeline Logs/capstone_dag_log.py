@@ -6,11 +6,11 @@ import pendulum
 from airflow.decorators import dag, task
 from data_ingestion_class_log import DataIngestion
 import pytz
-from data_transform_class_logs import DataTransformation
-# from data_load_class_log import DataLoad
+from data_transform_class_log import DataTransformation
+from data_load_class_log import DataLoad
 
 local_tz = pytz.timezone("Asia/Jakarta")
-start_airflow_date = pendulum.datetime(2024, 6, 13, tz="Asia/Jakarta")
+start_airflow_date = pendulum.datetime(2024, 6, 15, tz="Asia/Jakarta")
 
 default_args = {
     'owner': 'DE - Capstone Kelompok 1',
@@ -49,23 +49,23 @@ def data_transform(logical_date, **kwargs):
 
     return transformed_data_dir
 
-# def data_load(logical_date, **kwargs):
-#     ti = kwargs['ti']
-#     directory = ti.xcom_pull(task_ids='data_transform')
+def data_load(logical_date, **kwargs):
+    ti = kwargs['ti']
+    directory = ti.xcom_pull(task_ids='data_transform')
     
-#     logical_date_gmt7 = pendulum.instance(logical_date).in_timezone(local_tz)
-#     now_date = logical_date_gmt7.strftime("%Y-%m-%d")
+    logical_date_gmt7 = pendulum.instance(logical_date).in_timezone(local_tz)
+    now_date = logical_date_gmt7.strftime("%Y-%m-%d")
     
-#     DataLoad(directory,now_date)
-
-# f"{outputfile_csv}logs{logicaldate}"
+    DataLoad(directory, now_date)
 
 with DAG(
     dag_id="Capstone-Log-Pipeline",
     default_args=default_args,
     description="DAG for Greeve",
     start_date=start_airflow_date,
-    schedule_interval="@daily"
+    schedule_interval="@daily",
+    max_active_runs=1,
+    concurrency=1
 ) as dag:
 
     data_ingestion_task = PythonOperator(
@@ -80,11 +80,10 @@ with DAG(
         provide_context=True
     )
 
-    # data_load_task = PythonOperator(
-    #     task_id="data_load",
-    #     python_callable=data_load,
-    #     provide_context=True
-    # )
+    data_load_task = PythonOperator(
+        task_id="data_load",
+        python_callable=data_load,
+        provide_context=True
+    )
 
-    data_ingestion_task >> data_transform_task 
-    
+    data_ingestion_task  >> data_transform_task >> data_load_task
