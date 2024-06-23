@@ -1,75 +1,69 @@
-from airflow import DAG
-from airflow.operators.python_operator import PythonOperator
-from datetime import datetime, timedelta, date
-from airflow.decorators import dag, task
-from data_ingestion_class import DataIngestion
-from data_transform_class import DataTransformation
-from data_load_class import DataLoad
-import pendulum
-import pytz
+import pandas as pd
+import os
+from airflow.models import Variable
+from pymysql import connect
+from datetime import datetime, timedelta
+class DataIngestion:
+    def __init__(self, logical_date):
+        self.connection = connect(
+            host=Variable.get("DB_HOST"),
+            port=3306,
+            db="greeve-prod",
+            user=Variable.get("DB_USER"),
+            password=Variable.get("DB_PASS")
+        )
 
-local_tz = pytz.timezone("Asia/Jakarta")
-start_airflow_date = pendulum.datetime(2024, 6, 15, tz="Asia/Jakarta")
+        self.table_list = None
+        self.table_df_dict = None
+        self.start_datetime_str = None
 
-default_args = {
-    'owner': 'DE - Capstone Kelompok 1',
-    'retries': 3,
-    'retry_delay': timedelta(minutes=5),
-}
+        start_datetime = datetime.strptime(logical_date, '%Y-%m-%d')
+        end_datetime = start_datetime + timedelta(days=1, milliseconds=-1)
 
-def data_ingestion(logical_date, **kwargs):
+        self.date = logical_date
+        self.start_datetime_str = start_datetime.strftime('%Y-%m-%d %H:%M:%S')
+        self.end_datetime_str = end_datetime.strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
 
-    execution_date_gmt7 = pendulum.instance(logical_date).in_timezone(local_tz)
-    date = execution_date_gmt7.strftime("%Y-%m-%d")
+    def get_data(self):
+        cursor = self.connection.cursor()
 
-    save_directory = "dags/save_ingest/"
-    
-    ingest_obj = DataIngestion(date)
-    ingest_obj.get_data()
+        last_run_date_str = Variable.get("last_run_date")
 
-    return ingest_obj.save_data(save_directory)
+        if last_run_date_str == "firstrun":
+            # print("First Run!")
+            date_condition = f"created_at <= '{self.start_datetime_str}' OR updated_at <= '{self.start_datetime_str}'"
+        else:
+            # print("Not First Run!")
 
-def data_transform(ti, **kwargs):
+            date_condition = f"""
+            (created_at >= '{self.start_datetime_str}' AND created_at <= '{self.end_datetime_str}')
+            OR (updated_at >= '{self.start_datetime_str}' AND updated_at <= '{self.end_datetime_str}')
+            """
 
-    directory = ti.xcom_pull(task_ids='data_ingestion')
+        cursor.execute("SHOW TABLES")
+        tables = cursor.fetchall()
+        self.table_list = [table[0] for table in tables]
+        self.table_df_dict = dict.fromkeys(self.table_list, None)
 
-    transform_obj = DataTransformation(directory)
-    return transform_obj.transform_data()
+        for table in self.table_list:
+            query = f"""
+            SELECT * FROM {table}
+            WHERE {date_condition}
+            """
+            cursor.execute(query)
+            results = cursor.fetchall()
+            column_names = [desc[0] for desc in cursor.description]
+            self.table_df_dict[table] = pd.DataFrame(results, columns=column_names)
+        self.connection.close()
 
-def data_load(ti, logical_date, **kwargs):
+    def save_data(self, dirname):
+        dirname_date = os.path.join(dirname,  f"{self.date}/")
+        if not os.path.exists(dirname_date):
+            os.makedirs(dirname_date)
 
-    directory = ti.xcom_pull(task_ids='data_transform')
-    execution_date_gmt7 = pendulum.instance(logical_date).in_timezone(local_tz)
-    date = execution_date_gmt7.strftime("%Y-%m-%d")
+        for table in self.table_list:
+            self.table_df_dict[table].to_csv(f"{dirname_date}{table}.csv", index=False)
 
-    load_obj = DataLoad(directory, date)
+        Variable.set("last_run_date", self.date)
 
-with DAG(
-    dag_id="capstone",
-    default_args=default_args,
-    description="DAG for Greeve",
-    start_date=start_airflow_date,
-    schedule_interval="@daily",
-    max_active_runs=1,
-    concurrency=1
-) as dag:
-
-    data_ingestion_task = PythonOperator(
-        task_id="data_ingestion",
-        python_callable=data_ingestion,
-        provide_context=True
-    )
-
-    data_transform_task = PythonOperator(
-        task_id="data_transform",
-        python_callable=data_transform,
-        provide_context=True
-    )
-
-    data_load_task = PythonOperator(
-        task_id="data_load",
-        python_callable=data_load,
-        provide_context=True
-    )
-
-    data_ingestion_task  >> data_transform_task >> data_load_task
+        return dirname_date
