@@ -5,7 +5,7 @@
 <p align="center">
   <b>Greeve</b><br>
   Final Project Capstone Alterra Academy<br>
-  <a href="https://intip.in/GreeveVisualization">Explore the Greeve Visualization Dashboard</a> 
+  <a href="https://intip.in/GreeveDEVisualization">Explore the Greeve Visualization Dashboard</a> 
   <br><br>
 </p>
 
@@ -40,7 +40,7 @@
 We use this star schema design in Big Query tables to simplify queries and improve their performance
 
 # Visualization Dashboard
-### [Looker Studio Dashboard](https://intip.in/GreeveVisualization)
+### [Looker Studio Dashboard](https://intip.in/GreeveDEVisualization)
 ![Looker Studio Dashboard](/Pictures/Visualization%20Dashboard.png)
 
 
