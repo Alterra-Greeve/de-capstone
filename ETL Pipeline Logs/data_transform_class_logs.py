@@ -1,6 +1,6 @@
 import pandas as pd
 import os
-
+import numpy as np
 class DataTransformation:
     def __init__(self, input_dir, execution_date):
         self.execution_date=execution_date
@@ -30,6 +30,10 @@ class DataTransformation:
 
         open_product_df = open_product_df.rename(columns={'category': 'product_id'})
         search_product_df = search_product_df.rename(columns={'category': 'keyword'})
+
+        search_product_df['keyword'].replace(['0', ''], np.nan, inplace=True)
+        search_product_df.dropna(subset=['keyword'], inplace=True)
+        search_product_df = search_product_df[search_product_df['keyword'].apply(lambda x: len(x) > 2)]
 
         # Save transformed DataFrames to new CSV files
         transformed_open_category = os.path.join(self.transformed_data_dir, "transformed_open_category.csv")

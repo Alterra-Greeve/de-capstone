@@ -214,7 +214,11 @@ def manage_challenge_fact_table():
                     WHEN cl.status = 'Diterima' AND cc.challenge_confirmations_id IS NULL THEN 'Challenge Belum Dilakukan'
                     ELSE cc.status
                 END AS challenge_confirmations_status,
-                cc.created_at AS confirmation_upload_date,
+                CASE 
+                    WHEN cl.status = 'Ditolak' THEN cl.created_at
+                    WHEN cl.status = 'Diterima' AND cc.challenge_confirmations_id IS NULL THEN cl.created_at
+                    ELSE cc.created_at
+                END AS confirmation_upload_date,
                 c.title AS challenge_name,
                 ic.name AS category_name,
                 ic.impact_point AS impact_point
@@ -228,6 +232,8 @@ def manage_challenge_fact_table():
                 `{}.challenge_impact_categories` cic ON cl.challenge_id = cic.challenge_id AND cic.deleted_at IS NULL
             LEFT JOIN
                 `{}.impact_categories` ic ON cic.impact_category_id = ic.impact_categories_id
+            WHERE
+                ic.impact_categories_id IS NOT NULL
         """.format(final_table_id, project_dataset, project_dataset, project_dataset, project_dataset, project_dataset)
 
 

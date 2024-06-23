@@ -1,7 +1,6 @@
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from datetime import datetime, timedelta
-import os
 import pendulum
 from airflow.decorators import dag, task
 from data_ingestion_class_log import DataIngestion
@@ -10,7 +9,7 @@ from data_transform_class_log import DataTransformation
 from data_load_class_log import DataLoad
 
 local_tz = pytz.timezone("Asia/Jakarta")
-start_airflow_date = pendulum.datetime(2024, 6, 15, tz="Asia/Jakarta")
+start_airflow_date = pendulum.datetime(2024, 6, 19, tz="Asia/Jakarta")
 
 default_args = {
     'owner': 'DE - Capstone Kelompok 1',
@@ -21,14 +20,14 @@ default_args = {
 def data_ingestion(logical_date, **kwargs):
     log_msg_start = "[LOG_DE_START]"
     log_msg_end = "[LOG_DE_END]"
-    dirname="dags/de_logs/"
+    dirname="dags/logs/"
 
     print(logical_date)
-    logical_date_gmt7 = pendulum.instance(logical_date).in_timezone(local_tz)
-    print(logical_date_gmt7)
+    execution_date_gmt7 = pendulum.instance(logical_date).in_timezone(local_tz)
+    print(execution_date_gmt7)
 
-    start_date = logical_date_gmt7.strftime("%Y-%m-%d")
-    end_date = (logical_date_gmt7 + timedelta(days=1)).strftime("%Y-%m-%d")
+    start_date = execution_date_gmt7.strftime("%Y-%m-%d")
+    end_date = (execution_date_gmt7 + timedelta(days=1)).strftime("%Y-%m-%d")
 
     ingest_obj = DataIngestion()
     return ingest_obj.get_data(start_date, end_date, dirname, log_msg_start, log_msg_end)
