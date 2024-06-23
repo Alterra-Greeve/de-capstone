@@ -2,8 +2,8 @@ from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from datetime import datetime, timedelta, date
 from airflow.decorators import dag, task
-# from data_ingestion_class import DataIngestion
-# from data_transform_class import DataTransformation
+from data_ingestion_class import DataIngestion
+from data_transform_class import DataTransformation
 from data_load_class import DataLoad
 import pendulum
 import pytz
@@ -17,24 +17,24 @@ default_args = {
     'retry_delay': timedelta(minutes=5),
 }
 
-# def data_ingestion(logical_date, **kwargs):
+def data_ingestion(logical_date, **kwargs):
 
-#     execution_date_gmt7 = pendulum.instance(logical_date).in_timezone(local_tz)
-#     date = execution_date_gmt7.strftime("%Y-%m-%d")
+    execution_date_gmt7 = pendulum.instance(logical_date).in_timezone(local_tz)
+    date = execution_date_gmt7.strftime("%Y-%m-%d")
 
-#     save_directory = "dags/save_ingest/"
+    save_directory = "dags/save_ingest/"
     
-#     ingest_obj = DataIngestion(date)
-#     ingest_obj.get_data()
+    ingest_obj = DataIngestion(date)
+    ingest_obj.get_data()
 
-#     return ingest_obj.save_data(save_directory)
+    return ingest_obj.save_data(save_directory)
 
-# def data_transform(ti, **kwargs):
+def data_transform(ti, **kwargs):
 
-#     directory = ti.xcom_pull(task_ids='data_ingestion')
+    directory = ti.xcom_pull(task_ids='data_ingestion')
 
-#     transform_obj = DataTransformation(directory)
-#     return transform_obj.transform_data()
+    transform_obj = DataTransformation(directory)
+    return transform_obj.transform_data()
 
 def data_load(ti, logical_date, **kwargs):
 
@@ -72,5 +72,4 @@ with DAG(
         provide_context=True
     )
 
-    # data_ingestion_task  >> data_transform_task >> 
-    data_load_task
+    data_ingestion_task  >> data_transform_task >> data_load_task

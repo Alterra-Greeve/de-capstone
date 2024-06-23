@@ -3,20 +3,18 @@ from datetime import datetime
 from firebase_admin import credentials, initialize_app, storage
 from airflow.models import Variable
 
-def DataLoad(folder_path):
+def DataLoad(folder_path, current_date):
     try:
         # Load Firebase credentials path and Firebase Storage bucket from Airflow Variables
-        CERTIFICATE_PATH = Variable.get("firebase_certificate_path")
-        STORAGE_BUCKET = Variable.get("firebase_storage_bucket")
+        CERTIFICATE_PATH = Variable.get('CERTIFICATE_PATH_CAP')
+        GOOGLE_STORAGE_BUCKET = Variable.get('GOOGLE_STORAGE_BUCKET_CAP')
 
         # Initialize Firebase app if not already initialized
         cred = credentials.Certificate(CERTIFICATE_PATH)
-        initialize_app(cred, {"storageBucket": STORAGE_BUCKET}, name="firebase_storage")
+        initialize_app(cred, {"storageBucket": GOOGLE_STORAGE_BUCKET})
 
         # Get a reference to the Firebase Storage service
-        bucket = storage.bucket(app=storage.app(name="firebase_storage"))
-
-        current_date = datetime.now().strftime("%Y-%m-%d")
+        bucket = storage.bucket()    
 
         # Get all CSV files in the specified folder
         csv_files = [file for file in os.listdir(folder_path) if file.endswith('.csv')]
