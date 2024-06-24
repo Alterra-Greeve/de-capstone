@@ -1,0 +1,636 @@
+- name: admins
+  format: CSV
+  schema:
+  - name: admins_id
+    type: STRING
+    mode: NULLABLE
+  - name: created_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: updated_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: deleted_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: name
+    type: STRING
+    mode: NULLABLE
+  - name: username
+    type: STRING
+    mode: NULLABLE
+  - name: email
+    type: STRING
+    mode: NULLABLE
+  - name: password
+    type: STRING
+    mode: NULLABLE
+# - name: carts
+#   format: CSV
+#   partitioning_field: created_at
+#   schema:
+#   - name: carts_id
+#     type: STRING
+#     mode: NULLABLE
+#   - name: created_at
+#     type: DATETIME
+#     mode: NULLABLE
+#   - name: updated_at
+#     type: DATETIME
+#     mode: NULLABLE
+#   - name: deleted_at
+#     type: DATETIME
+#     mode: NULLABLE
+#   - name: user_id
+#     type: STRING
+#     mode: NULLABLE
+#   - name: product_id
+#     type: STRING
+#     mode: NULLABLE
+#   - name: quantity
+#     type: INT64
+#     mode: NULLABLE
+# - name: challenge_confirmation_image
+#   format: CSV
+#   partitioning_field: created_at
+#   schema:
+#   - name: challenge_confirmation_image_id
+#     type: STRING
+#     mode: NULLABLE
+#   - name: created_at
+#     type: DATETIME
+#     mode: NULLABLE
+#   - name: updated_at
+#     type: DATETIME
+#     mode: NULLABLE
+#   - name: deleted_at
+#     type: DATETIME
+#     mode: NULLABLE
+#   - name: image_url
+#     type: STRING
+#     mode: NULLABLE
+#   - name: challenge_confirmation_id
+#     type: STRING
+#     mode: NULLABLE
+- name: challenge_confirmations
+  format: CSV
+  partitioning_field: created_at
+  schema:
+  - name: challenge_confirmations_id
+    type: STRING
+    mode: NULLABLE
+  - name: created_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: updated_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: deleted_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: challenge_id
+    type: STRING
+    mode: NULLABLE
+  - name: user_id
+    type: STRING
+    mode: NULLABLE
+  - name: description
+    type: STRING
+    mode: NULLABLE
+  - name: date_upload
+    type: DATETIME
+    mode: NULLABLE
+  - name: status
+    type: STRING
+    mode: NULLABLE
+- name: challenge_impact_categories
+  format: CSV
+  partitioning_field: created_at
+  schema:
+  - name: challenge_impact_categories_id
+    type: STRING
+    mode: NULLABLE
+  - name: created_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: updated_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: deleted_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: challenge_id
+    type: STRING
+    mode: NULLABLE
+  - name: impact_category_id
+    type: STRING
+    mode: NULLABLE
+- name: challenge_logs
+  format: CSV
+  partitioning_field: created_at
+  schema:
+  - name: challenge_logs_id
+    type: STRING
+    mode: NULLABLE
+  - name: created_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: updated_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: deleted_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: user_id
+    type: STRING
+    mode: NULLABLE
+  - name: challenge_id
+    type: STRING
+    mode: NULLABLE
+  - name: status
+    type: STRING
+    mode: NULLABLE
+- name: challenges
+  format: CSV
+  partitioning_field: created_at
+  schema:
+  - name: challenges_id
+    type: STRING
+    mode: NULLABLE
+  - name: created_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: updated_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: deleted_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: title
+    type: STRING
+    mode: NULLABLE
+  - name: difficulty
+    type: STRING
+    mode: NULLABLE
+  - name: description
+    type: STRING
+    mode: NULLABLE
+  - name: exp
+    type: INT64
+    mode: NULLABLE
+  - name: coin
+    type: INT64
+    mode: NULLABLE
+  - name: image_url
+    type: STRING
+    mode: NULLABLE
+  - name: date_start
+    type: DATETIME
+    mode: NULLABLE
+  - name: date_end
+    type: DATETIME
+    mode: NULLABLE
+# - name: forums
+#   format: CSV
+#   partitioning_field: created_at
+#   schema:
+#   - name: forums_id
+#     type: STRING
+#     mode: NULLABLE
+#   - name: created_at
+#     type: DATETIME
+#     mode: NULLABLE
+#   - name: updated_at
+#     type: DATETIME
+#     mode: NULLABLE
+#   - name: deleted_at
+#     type: DATETIME
+#     mode: NULLABLE
+#   - name: title
+#     type: STRING
+#     mode: NULLABLE
+#   - name: user_id
+#     type: STRING
+#     mode: NULLABLE
+#   - name: description
+#     type: STRING
+#     mode: NULLABLE
+#   - name: last_message_at
+#     type: DATETIME
+#     mode: NULLABLE
+- name: impact_categories
+  format: CSV
+  schema:
+  - name: impact_categories_id
+    type: STRING
+    mode: NULLABLE
+  - name: created_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: updated_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: deleted_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: name
+    type: STRING
+    mode: NULLABLE
+  - name: impact_point
+    type: INT64
+    mode: NULLABLE
+  - name: image_url
+    type: STRING
+    mode: NULLABLE
+  - name: description
+    type: STRING
+    mode: NULLABLE
+  - name: icon_url
+    type: STRING
+    mode: NULLABLE
+# - name: message_forums
+#   format: CSV
+#   partitioning_field: created_at
+#   schema:
+#   - name: message_forums_id
+#     type: STRING
+#     mode: NULLABLE
+#   - name: created_at
+#     type: DATETIME
+#     mode: NULLABLE
+#   - name: updated_at
+#     type: DATETIME
+#     mode: NULLABLE
+#   - name: deleted_at
+#     type: DATETIME
+#     mode: NULLABLE
+#   - name: forum_id
+#     type: STRING
+#     mode: NULLABLE
+#   - name: message
+#     type: STRING
+#     mode: NULLABLE
+#   - name: user_id
+#     type: STRING
+#     mode: NULLABLE
+# - name: payment_notifications
+#   format: CSV
+#   partitioning_field: created_at
+#   schema:
+#   - name: payment_notifications_id
+#     type: STRING
+#     mode: NULLABLE
+#   - name: created_at
+#     type: DATETIME
+#     mode: NULLABLE
+#   - name: updated_at
+#     type: DATETIME
+#     mode: NULLABLE
+#   - name: deleted_at
+#     type: DATETIME
+#     mode: NULLABLE
+#   - name: order_id
+#     type: STRING
+#     mode: NULLABLE
+#   - name: transaction_time
+#     type: STRING
+#     mode: NULLABLE
+#   - name: transaction_status
+#     type: STRING
+#     mode: NULLABLE
+#   - name: transaction_id
+#     type: STRING
+#     mode: NULLABLE
+#   - name: signature_key
+#     type: STRING
+#     mode: NULLABLE
+#   - name: payment_type
+#     type: STRING
+#     mode: NULLABLE
+#   - name: merchant_id
+#     type: STRING
+#     mode: NULLABLE
+#   - name: gross_amount
+#     type: STRING
+#     mode: NULLABLE
+#   - name: fraud_status
+#     type: STRING
+#     mode: NULLABLE
+#   - name: currency
+#     type: STRING
+#     mode: NULLABLE
+#   - name: settlement_time
+#     type: STRING
+#     mode: NULLABLE
+# - name: product_images
+#   format: CSV
+#   partitioning_field: created_at
+#   schema:
+#   - name: product_images_id
+#     type: STRING
+#     mode: NULLABLE
+#   - name: created_at
+#     type: DATETIME
+#     mode: NULLABLE
+#   - name: updated_at
+#     type: DATETIME
+#     mode: NULLABLE
+#   - name: deleted_at
+#     type: DATETIME
+#     mode: NULLABLE
+#   - name: product_id
+#     type: STRING
+#     mode: NULLABLE
+#   - name: image_url
+#     type: STRING
+#     mode: NULLABLE
+#   - name: position
+#     type: INT64
+#     mode: NULLABLE
+- name: product_impact_categories
+  format: CSV
+  partitioning_field: created_at
+  schema:
+  - name: product_impact_categories_id
+    type: STRING
+    mode: NULLABLE
+  - name: created_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: updated_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: deleted_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: product_id
+    type: STRING
+    mode: NULLABLE
+  - name: impact_category_id
+    type: STRING
+    mode: NULLABLE
+# - name: product_logs
+#   format: CSV
+#   partitioning_field: created_at
+#   schema:
+#   - name: product_logs_id
+#     type: STRING
+#     mode: NULLABLE
+#   - name: created_at
+#     type: DATETIME
+#     mode: NULLABLE
+#   - name: updated_at
+#     type: DATETIME
+#     mode: NULLABLE
+#   - name: deleted_at
+#     type: DATETIME
+#     mode: NULLABLE
+#   - name: user_id
+#     type: STRING
+#     mode: NULLABLE
+#   - name: product_id
+#     type: STRING
+#     mode: NULLABLE
+- name: products
+  format: CSV
+  partitioning_field: created_at
+  schema:
+  - name: products_id
+    type: STRING
+    mode: NULLABLE
+  - name: created_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: updated_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: deleted_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: name
+    type: STRING
+    mode: NULLABLE
+  - name: description
+    type: STRING
+    mode: NULLABLE
+  - name: price
+    type: FLOAT
+    mode: NULLABLE
+  - name: coin
+    type: INT64
+    mode: NULLABLE
+  - name: stock
+    type: INT64
+    mode: NULLABLE
+- name: transaction_items
+  format: CSV
+  partitioning_field: created_at
+  schema:
+  - name: transaction_items_id
+    type: STRING
+    mode: NULLABLE
+  - name: created_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: updated_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: deleted_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: transaction_id
+    type: STRING
+    mode: NULLABLE
+  - name: product_id
+    type: STRING
+    mode: NULLABLE
+  - name: quantity
+    type: INT64
+    mode: NULLABLE
+- name: transactions
+  format: CSV
+  partitioning_field: created_at
+  schema:
+  - name: transactions_id
+    type: STRING
+    mode: NULLABLE
+  - name: created_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: updated_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: deleted_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: voucher_id
+    type: STRING
+    mode: NULLABLE
+  - name: user_id
+    type: STRING
+    mode: NULLABLE
+  - name: address
+    type: STRING
+    mode: NULLABLE
+  - name: total
+    type: FLOAT
+    mode: NULLABLE
+  - name: status
+    type: STRING
+    mode: NULLABLE
+  - name: payment_method
+    type: STRING
+    mode: NULLABLE
+  - name: snap_url
+    type: STRING
+    mode: NULLABLE
+  - name: coin
+    type: INT64
+    mode: NULLABLE
+- name: users
+  format: CSV
+  partitioning_field: created_at
+  schema:
+  - name: users_id
+    type: STRING
+    mode: NULLABLE
+  - name: created_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: updated_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: deleted_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: name
+    type: STRING
+    mode: NULLABLE
+  - name: email
+    type: STRING
+    mode: NULLABLE
+  - name: username
+    type: STRING
+    mode: NULLABLE
+  - name: password
+    type: STRING
+    mode: NULLABLE
+  - name: address
+    type: STRING
+    mode: NULLABLE
+  - name: gender
+    type: STRING
+    mode: NULLABLE
+  - name: phone
+    type: STRING
+    mode: NULLABLE
+  - name: coin
+    type: INT64
+    mode: NULLABLE
+  - name: exp
+    type: INT64
+    mode: NULLABLE
+  - name: avatar_url
+    type: STRING
+    mode: NULLABLE
+  - name: membership
+    type: STRING
+    mode: NULLABLE
+# - name: verify_otp
+#   format: CSV
+#   partitioning_field: created_at
+#   schema:
+#   - name: verify_otp_id
+#     type: STRING
+#     mode: NULLABLE
+#   - name: created_at
+#     type: DATETIME
+#     mode: NULLABLE
+#   - name: updated_at
+#     type: DATETIME
+#     mode: NULLABLE
+#   - name: deleted_at
+#     type: DATETIME
+#     mode: NULLABLE
+#   - name: email
+#     type: STRING
+#     mode: NULLABLE
+#   - name: otp
+#     type: STRING
+#     mode: NULLABLE
+#   - name: expired_at
+#     type: DATETIME
+#     mode: NULLABLE
+- name: vouchers
+  format: CSV
+  partitioning_field: created_at
+  schema:
+  - name: vouchers_id
+    type: STRING
+    mode: NULLABLE
+  - name: created_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: updated_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: deleted_at
+    type: DATETIME
+    mode: NULLABLE
+  - name: name
+    type: STRING
+    mode: NULLABLE
+  - name: code
+    type: STRING
+    mode: NULLABLE
+  - name: discount
+    type: STRING
+    mode: NULLABLE
+  - name: description
+    type: STRING
+    mode: NULLABLE
+  - name: expired_at
+    type: DATETIME
+    mode: NULLABLE
+- name: transformed_open_category
+  format: CSV
+  load_mode: append
+  partitioning_field: timestamp
+  schema:
+  - name: timestamp
+    type: DATETIME
+    mode: NULLABLE
+  - name: user_id
+    type: STRING
+    mode: NULLABLE
+  - name: category
+    type: STRING
+    mode: NULLABLE
+- name: transformed_open_product
+  format: CSV
+  load_mode: append
+  partitioning_field: timestamp
+  schema:
+  - name: timestamp
+    type: DATETIME
+    mode: NULLABLE
+  - name: user_id
+    type: STRING
+    mode: NULLABLE
+  - name: product_id
+    type: STRING
+    mode: NULLABLE
+- name: transformed_search_product
+  format: CSV
+  load_mode: append
+  partitioning_field: timestamp
+  schema:
+  - name: timestamp
+    type: DATETIME
+    mode: NULLABLE
+  - name: user_id
+    type: STRING
+    mode: NULLABLE
+  - name: keyword
+    type: STRING
+    mode: NULLABLE
